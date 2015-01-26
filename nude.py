@@ -26,7 +26,13 @@ class Nude(object):
 
     Skin = namedtuple("Skin", "id skin region x y checked")
 
-    def __init__(self, path_or_io):
+    def __init__(self, path_or_io, sampler=None):
+        """
+            @params:
+                path_or_io: is a filename(fullpath), image object(PIL/Pillow) or a file object
+                sampler: Function to pick pixels to test.
+                         Function must return a generator/iterator object. If none, will test all pixels(wasteful)
+        """
         if isinstance(path_or_io, Image.Image):
             self.image = path_or_io
         elif isinstance(path_or_io, (str, file)):
@@ -42,7 +48,7 @@ class Nude(object):
             self.image = new_img
             self.image.filename = f
         # use a generator, function to strategically sample. Defaults to old complete sampling.
-        self.sample_pixel = default_sample_gen(self.image.size[0], self.image.size[1])
+        self.sample_pixel = sampler or default_sample_gen(self.image.size[0], self.image.size[1])
         self.skin_map = []
         self.skin_regions = []
         self.detected_regions = []
