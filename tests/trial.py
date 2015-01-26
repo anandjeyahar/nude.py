@@ -29,13 +29,13 @@ def nudecallback(result):
 		results['tp'] += 1
 	else:
 		results['fn'] += 1
-		
+
 def notnudecallback(result):
 	global results
 	if result:
 		results['fp'] += 1
 	else:
-		results['tn'] += 1	
+		results['tn'] += 1
 
 if __name__ == '__main__':
 	import argparse
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 	parser.add_argument('-r', '--resize', action='store_true', help='Reduce image size to increase speed of scanning')
 	parser.add_argument('-t', '--threads', metavar='int', type=int, required=False, default=0, help='The number of threads to start')
 	args = parser.parse_args()
-	
+
 	if args.threads < 1:
 		args.threads = None
 
@@ -55,10 +55,11 @@ if __name__ == '__main__':
 	results['fn'] = 0
 	nudepath = os.path.join('samples', 'nude')
 	notnudepath = os.path.join('samples', 'not_nude')
+
 	for nudepic in os.listdir(nudepath):
 		fname = os.path.join(nudepath, nudepic)
 		pool.apply_async(testfile, (fname, ), {'resize':args.resize}, nudecallback)
-		
+
 	for notnudepic in os.listdir(notnudepath):
 		fname = os.path.join(notnudepath, notnudepic)
 		pool.apply_async(testfile, (fname, ), {'resize':args.resize}, notnudecallback)
