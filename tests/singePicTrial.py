@@ -6,7 +6,6 @@ import nude
 import imp
 
 def testfile(fname, resize=False):
-    import pdb; pdb.set_trace()
     n = nude.Nude(fname)
     if resize:
         n.resize(maxheight=800, maxwidth=600)
@@ -20,8 +19,8 @@ def testAll():
                 random.choice(os.listdir(nudePath)))
     notNudeFile = os.path.join('samples', 'not_nude',
             random.choice(os.listdir(notNudePath)))
-    print testfile(nudeFile)
-    print testfile(notNudeFile)
+    print nudeFile, testfile(nudeFile)
+    print notNudeFile, testfile(notNudeFile)
 
 if __name__ == '__main__':
     testAll()
