@@ -21,6 +21,8 @@ def default_sample_gen(width, height):
         for x in range(width):
             yield x,y
 
+def random_sample_gen(width, height):
+    yield random.choice([(x,y) for x in range(width) for y in range(height)])
 
 class Nude(object):
 
@@ -48,7 +50,10 @@ class Nude(object):
             self.image = new_img
             self.image.filename = f
         # use a generator, function to strategically sample. Defaults to old complete sampling.
-        self.sample_pixel = sampler or default_sample_gen(self.image.size[0], self.image.size[1])
+        if sampler:
+            self.sample_pixel = sampler(self.image.size[0], self.image.size[1])
+        else:
+            self.sample_pixel = default_sample_gen(self.image.size[0], self.image.size[1])
         self.skin_map = []
         self.skin_regions = []
         self.detected_regions = []
