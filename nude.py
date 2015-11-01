@@ -9,6 +9,7 @@ import math
 import sys
 import time
 from collections import namedtuple
+from functools import partial
 from PIL import Image
 
 import collections
@@ -33,12 +34,18 @@ class defaultSampleGen():
         if (self.sampledCount/(self.width * self.height) <= 0.5):
             for y in range(self.height):
                 for x in range(self.width):
-                    return x,y
+                    yield ((x,y))
         else:
             raise StopIteration()
 
-def random_sample_gen(width, height):
-    yield random.choice([(x,y) for x in range(width) for y in range(height)])
+
+class randomSampleGen():
+    def __init__(self, width, height):
+        self.sampledCount = 0
+        self.width = width
+        self.height= height
+    def __iter__(self):
+        yield random.choice([(x,y) for x in range(width) for y in range(height)])
 
 class Nude(object):
 
@@ -67,7 +74,7 @@ class Nude(object):
             self.image.filename = f
         # use a generator, function to strategically sample. Defaults to old complete sampling.
         if sampler:
-            assert isinstance(sampler, collections.Iterable), "sampler must be an iterable"
+            #assert hasattr(sampler, '__iter__'), "sampler must be an iterable"
             self.sample_pixel = sampler(self.image.size[0], self.image.size[1])
         else:
             self.sample_pixel = defaultSampleGen(self.image.size[0], self.image.size[1])
@@ -122,7 +129,9 @@ class Nude(object):
             return self
 
         pixels = self.image.load()
-        for x,y in self.sample_pixel:
+        for tup in self.sample_pixel.next():
+            x = tup[0]
+            y = tup[1]
             r = pixels[x, y][0]   # red
             g = pixels[x, y][1]   # green
             b = pixels[x, y][2]   # blue
@@ -401,7 +410,7 @@ class Nude(object):
 
 def _testfile(fname, resize=False):
     start = time.time()
-    n = Nude(fname)
+    n = Nude(fname, sampler=defaultSampleGen)
     if resize:
         n.resize(maxheight=800, maxwidth=600)
     n.parse()
