@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import copy
+import dlib
 import math
 import sys
 import time
@@ -12,7 +13,6 @@ from collections import namedtuple
 from functools import partial
 from PIL import Image
 
-import collections
 
 sampledCount = 0
 
@@ -20,18 +20,36 @@ def is_nude(path_or_io):
     nude = Nude(path_or_io)
     return nude.parse().result
 
+class smartSampleGen():
+    """
+    Generates sample pixels based on the detected objects from python dlib library
+    """
+    def __init__(self, xsize, ysize, path_or_io):
+        """
+        Image is numpy array
+        """
+        assert path_or_io, "Please pass an image path"
+        self.image = io.imread(path_or_io)
+        self.detector = dlib.fhog_object_detector()
+        self.detector.run(self.image)
+    def __iter__(self):
+        return self
+
+    def next(self):
+       yield ((x,y))
 class defaultSampleGen():
-    def __init__(self, width, height):
+    def __init__(self, width, height, sample_size=0.5):
         self.sampledCount = 0
         self.width = width
         self.height= height
+        self.sample_size = sample_size
 
     def __iter__(self):
         return self
 
     def next(self):
         self.sampledCount +=1
-        if (self.sampledCount/(self.width * self.height) <= 0.5):
+        if (self.sampledCount/(self.width * self.height) <= self.sample_size):
             for y in range(self.height):
                 for x in range(self.width):
                     yield ((x,y))
@@ -51,7 +69,7 @@ class Nude(object):
 
     Skin = namedtuple("Skin", "id skin region x y checked")
 
-    def __init__(self, path_or_io, sampler=None):
+    def __init__(self, path_or_io, sampler=None, sample_percent=0.5):
         """
             @params:
                 path_or_io: is a filename(fullpath), image object(PIL/Pillow) or a file object
@@ -75,9 +93,14 @@ class Nude(object):
         # use a generator, function to strategically sample. Defaults to old complete sampling.
         if sampler:
             #assert hasattr(sampler, '__iter__'), "sampler must be an iterable"
-            self.sample_pixel = sampler(self.image.size[0], self.image.size[1])
+            self.sample_pixel = sampler(self.image.size[0],
+                                        self.image.size[1],
+                                        path_or_io=None)
         else:
-            self.sample_pixel = defaultSampleGen(self.image.size[0], self.image.size[1])
+            self.sample_pixel = defaultSampleGen(self.image.size[0],
+                                                 self.image.size[1],
+                                                 sample_percent,
+                                                 path_or_io=None)
         self.skin_map = []
         self.skin_regions = []
         self.detected_regions = []
