@@ -31,12 +31,14 @@ class smartSampleGen():
         assert path_or_io, "Please pass an image path"
         self.image = io.imread(path_or_io)
         self.detector = dlib.fhog_object_detector()
-        self.detector.run(self.image)
+        self.objects = self.detector.run(self.image)
+
     def __iter__(self):
         return self
 
     def next(self):
        yield ((x,y))
+
 class defaultSampleGen():
     def __init__(self, width, height, sample_size=0.5):
         self.sampledCount = 0
