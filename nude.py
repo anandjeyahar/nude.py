@@ -39,6 +39,7 @@ class smartSampleGen():
     def next(self):
        yield ((x,y))
 
+
 class defaultSampleGen():
     def __init__(self, width, height, sample_size=0.5):
         self.sampledCount = 0
@@ -435,7 +436,7 @@ class Nude(object):
 
 def _testfile(fname, resize=False):
     start = time.time()
-    n = Nude(fname, sampler=defaultSampleGen)
+    n = Nude(fname, sampler=smartSampleGen)
     if resize:
         n.resize(maxheight=800, maxwidth=600)
     n.parse()
