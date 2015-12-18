@@ -9,9 +9,11 @@ import dlib
 import math
 import sys
 import time
+
 from collections import namedtuple
 from functools import partial
 from PIL import Image
+from skimage import io
 
 
 sampledCount = 0
@@ -32,6 +34,7 @@ class smartSampleGen():
         self.image = io.imread(path_or_io)
         self.detector = dlib.fhog_object_detector()
         self.objects = self.detector.run(self.image)
+        import pdb; pdb.set_trace()
 
     def __iter__(self):
         return self
@@ -98,7 +101,7 @@ class Nude(object):
             #assert hasattr(sampler, '__iter__'), "sampler must be an iterable"
             self.sample_pixel = sampler(self.image.size[0],
                                         self.image.size[1],
-                                        path_or_io=None)
+                                        path_or_io=path_or_io)
         else:
             self.sample_pixel = defaultSampleGen(self.image.size[0],
                                                  self.image.size[1],
@@ -502,6 +505,7 @@ def main():
             pool.join()
     # Run without multiprocessing
     else:
+
         for fname in args.files:
             if os.path.isfile(fname):
                 callback(_testfile(fname, resize=args.resize))
