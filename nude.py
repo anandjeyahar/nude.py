@@ -34,7 +34,6 @@ class smartSampleGen():
         self.image = io.imread(path_or_io)
         self.detector = dlib.fhog_object_detector()
         self.objects = self.detector.run(self.image)
-        import pdb; pdb.set_trace()
 
     def __iter__(self):
         return self
