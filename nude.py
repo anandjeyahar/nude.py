@@ -9,7 +9,6 @@ import dlib
 import math
 import sys
 import time
-
 from collections import namedtuple
 from functools import partial
 from PIL import Image
@@ -22,7 +21,34 @@ def is_nude(path_or_io):
     nude = Nude(path_or_io)
     return nude.parse().result
 
-class smartSampleGen():
+class ORBSampleGen():
+    """
+    Generates sample pixels based on the detected objects skimage orb detection
+    http://scikit-image.org/docs/stable/auto_examples/features_detection/plot_orb.html#example-features-detection-plot-orb-py
+    """
+    def __init__(self, xsize, ysize, path_or_io, keypoints=200, **kwargs):
+        assert path_or_io, "Please pass an image path"
+        self.image = io.imread(path_or_io)
+        self.keypoints = keypoints
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        from skimage import import transform as tf
+        from skimage.feature import import (match_descriptors, corner_harris,
+                                                                corner_peaks, ORB, plot_matches)
+        from skimage.color import import rgb2gray
+
+        img1 = rgb2gray(self.image)
+        descriptor_extractor = ORB(n_keypoints=200)
+        descriptor_extractor.detect_and_extract(img1)
+        keypoints1 = descriptor_extractor.keypoints
+        descriptors1 = descriptor_extractor.descriptors
+
+        yield ((x,y))
+
+class dlib_fhog_SampleGen():
     """
     Generates sample pixels based on the detected objects from python dlib library
     """
