@@ -45,8 +45,8 @@ class ORBSampleGen():
         descriptor_extractor.detect_and_extract(img1)
         keypoints1 = descriptor_extractor.keypoints
         descriptors1 = descriptor_extractor.descriptors
-
-        yield ((x,y))
+        for x,y in keypoints1:
+            yield ((x,y))
 
 class dlib_fhog_SampleGen():
     """
