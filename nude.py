@@ -14,12 +14,32 @@ from functools import partial
 from PIL import Image
 from skimage import io
 
+# Custom library
+import phash
 
 sampledCount = 0
 
 def is_nude(path_or_io):
     nude = Nude(path_or_io)
     return nude.parse().result
+
+class PerceptualHashGen():
+    """
+    Generates perceptual hash http://blog.iconfinder.com/detecting-duplicate-images-using-python/
+    """
+    def __init__(self, xsize, ysize, path_or_io, keypoints=200, **kwargs):
+        assert path_or_io, "Please pass an image path"
+        self.image = io.imread(path_or_io)
+        self.hash_size = self.hash_size or math.sqrt(self.image.size[0]*self.image.size[1])
+        pass
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        hash_img = phash.perceptual_hash(self.image)
+        for x,y in zip(range(0, hash_img.size[0]), range(0, hash_img.size[1])):
+            yield ((x,y))
 
 class ORBSampleGen():
     """
@@ -35,10 +55,10 @@ class ORBSampleGen():
         return self
 
     def __next__(self):
-        from skimage import import transform as tf
-        from skimage.feature import import (match_descriptors, corner_harris,
+        from skimage import transform as tf
+        from skimage.feature import (match_descriptors, corner_harris,
                                                                 corner_peaks, ORB, plot_matches)
-        from skimage.color import import rgb2gray
+        from skimage.color import rgb2gray
 
         img1 = rgb2gray(self.image)
         descriptor_extractor = ORB(n_keypoints=200)
