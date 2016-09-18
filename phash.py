@@ -1,5 +1,5 @@
 # Straight from http://blog.iconfinder.com/detecting-duplicate-images-using-python/
-def perceptual_hash(image, hash_size = 8):
+def perceptual_hash(image, hash_size = (x,y)):
     # Grayscale and shrink the image in one step.
     image = image.convert('L').resize(
         (hash_size + 1, hash_size),
@@ -10,8 +10,8 @@ def perceptual_hash(image, hash_size = 8):
 
     # Compare adjacent pixels.
     difference = []
-    for row in xrange(hash_size):
-        for col in xrange(hash_size):
+    for row in xrange(hash_size[1]):
+        for col in xrange(hash_size[0]):
             pixel_left = image.getpixel((col, row))
             pixel_right = image.getpixel((col + 1, row))
             difference.append(pixel_left > pixel_right)

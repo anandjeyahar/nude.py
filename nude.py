@@ -29,9 +29,9 @@ class PerceptualHashGen():
     """
     def __init__(self, xsize, ysize, path_or_io, keypoints=200, **kwargs):
         assert path_or_io, "Please pass an image path"
+        assert isinstance(self.hash_size, tuple), "Hash size has to be a tuple"
         self.image = io.imread(path_or_io)
-        self.hash_size = self.hash_size or math.sqrt(self.image.size[0]*self.image.size[1])
-        pass
+        self.hash_size = self.hash_size or (0.5* self.image.size[0], 0.5*self.image.size[1])
 
     def __iter__(self):
         return self
