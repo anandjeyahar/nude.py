@@ -14,9 +14,6 @@ from functools import partial
 from PIL import Image
 from skimage import io
 
-# Custom library
-import phash
-
 sampledCount = 0
 
 def is_nude(path_or_io):
@@ -28,6 +25,8 @@ class PerceptualHashGen():
     Generates perceptual hash http://blog.iconfinder.com/detecting-duplicate-images-using-python/
     """
     def __init__(self, xsize, ysize, path_or_io, keypoints=200, **kwargs):
+        # Custom library
+        import phash
         assert path_or_io, "Please pass an image path"
         assert isinstance(self.hash_size, tuple), "Hash size has to be a tuple"
         self.image = io.imread(path_or_io)
@@ -484,7 +483,7 @@ class Nude(object):
 
 def _testfile(fname, resize=False):
     start = time.time()
-    n = Nude(fname, sampler=smartSampleGen)
+    n = Nude(fname, sampler=randomSampleGen)
     if resize:
         n.resize(maxheight=800, maxwidth=600)
     n.parse()
