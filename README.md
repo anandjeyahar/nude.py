@@ -3,6 +3,7 @@ nude.py
 
 About
 -----
+This is a fork of _GitHub: https://github.com/hhatto/nude.py with some additions and changes.
 Nudity detection with Python. Port of `nude.js`_ to Python.
 
 .. _`nude.js`: https://github.com/pa7/nude.js
@@ -56,7 +57,6 @@ Links
 * GitHub_
 
 .. _PyPI: http://pypi.python.org/pypi/nudepy/
-.. _GitHub: https://github.com/hhatto/nude.py
 
 
 # My 2 paisas
@@ -64,7 +64,10 @@ Links
 *  Adding a way to write custom sampling engine function to pass to the nude class to sample pixels
 
 # ROADMAP:
+* This is kinda obsolete. There is the [open_nsfw](https://github.com/yahoo/open_nsfw) which probably makes this look clownish.
 * This is a very brute force approach. A more scalable approach would be either:
 	a, Neural network trained approach or
-	One approach could be extract SIFT features from a set of true and false nude images,
+	b, One approach could be extract SIFT features from a set of true and false nude images,
 	and then training a neural network(which one?) and building a model.
+
+
